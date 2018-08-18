@@ -1,7 +1,8 @@
-'use strict';
-const AWS = require('aws-sdk')
+const AWS = require('aws-sdk');
+
 const NAMES_TABLE = process.env.NAMES_TABLE;
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
 
 module.exports.saveName = (event, context, callback) => {
   let response = {
@@ -12,7 +13,7 @@ module.exports.saveName = (event, context, callback) => {
   };
   const name = event.queryStringParameters.name;
   const age = event.queryStringParameters.age;
-  console.log(`Request to save name ${name} with age ${age}`);
+  console.log(`HELLO! Request to save name ${name} with age ${age}`);
 
   const params = {
     TableName: NAMES_TABLE,
@@ -32,19 +33,19 @@ module.exports.saveName = (event, context, callback) => {
     }
     response.body = JSON.stringify({ name, age })
     callback(null, response);
-  })
+  });
 }
 
 module.exports.getName = (event, context, callback) => {
   let response = {
-    statusCode = 200;
+    statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
     }
   };
 
   const name = event.queryStringParameters.name;
-  console.log(`Request tp retrieve name ${name}`);
+  console.log(`Request to retrieve name ${name}`);
 
   const params = {
     TableName: NAMES_TABLE,
@@ -62,7 +63,7 @@ module.exports.getName = (event, context, callback) => {
       callback(null, response);
     }
     if (result.Item) {
-      const { name, age } = result.Item;
+      const {name, age } = result.Item;
       response.body = JSON.stringify({ name, age })
 
       callback(null, response);
@@ -74,35 +75,3 @@ module.exports.getName = (event, context, callback) => {
     }
   });
 }
-
-module.exports.helloWorld = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-    },
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
-
-  callback(null, response);
-};
-
-module.exports.helloName = (event, context, callback) => {
-  let name = 'stranger';
-  if (event.queryStringParameters && event.queryStringParameters.name) {
-    name = event.queryStringParameters.name;
-  }
-  const response = {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*', //Required for CORS support to work
-    },
-    body: JSON.stringify({
-      message: `Hello, ${name}!`
-    })
-  };
-  callback(null, response);
-};
